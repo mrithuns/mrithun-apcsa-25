@@ -4,7 +4,7 @@ import kareltherobot.*;
 
 public class Diamond implements Directions{
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { 
 
         World.setVisible(true);// allows us to see the run output
         // the bigger the street, the farther north
