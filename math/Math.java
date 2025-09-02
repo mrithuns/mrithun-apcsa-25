@@ -76,5 +76,13 @@ class Math {
         System.out.print(" - " + d);  //printing the final integer value of the variable d wth a hyphen before it
       }
     }
+    
+      System.out.println("hehe");
+      for (int i2 = 1; i2 <= 9; i2++) {
+        if (i2 % 2 != 0) {
+          System.out.print(i2);
+        }
+      }
+    
   }
 }
