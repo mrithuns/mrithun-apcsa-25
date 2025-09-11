@@ -43,8 +43,33 @@ public class Roomba implements Directions {
 		// the line below causes a null pointer exception
 		// what is that and why are we getting it?
 		
-		while (roomba.alive()) {
+		
+		boolean moreToClean = true;
+		while (moreToClean) {
+			while (roomba.frontIsClear()) {
+				roomba.move();
+				while (roomba.nextToABeeper()) {
+				roomba.pickBeeper();
+				totalBeepers++;
+				}
+			}
 
+			
+
+			if(roomba.facingEast()) {
+				roomba.turnLeft();
+				roomba.move();
+				roomba.turnLeft();
+			}
+			else {
+				roomba.turnLeft();
+				roomba.turnLeft();
+				roomba.turnLeft();
+				roomba.move();
+				roomba.turnLeft();
+				roomba.turnLeft();
+				roomba.turnLeft();
+			}
 		}
 		
 		/*roomba.move();
