@@ -33,6 +33,10 @@ public class Roomba implements Directions {
 
 		int totalBeepers = 0;
 		int totalSpaces=0;
+		int largestPile=0;
+		int pileCount=0;
+		int pileLocationX = 0;
+		int pileLocationY = 0;
 
 		/** This section will have all the logic that takes the Robot to every location
 		 * and cleans up all piles of beepers. Think about ways you can break this
@@ -49,10 +53,17 @@ public class Roomba implements Directions {
 		while (moreToClean) {
 			while (roomba.frontIsClear()) {
 				roomba.move();
+				pileCount=0;
 				totalSpaces++;
 				while (roomba.nextToABeeper()) {
 				roomba.pickBeeper();
+				pileCount++;
 				totalBeepers++;
+				if (pileCount>largestPile) {
+					largestPile=pileCount;
+					pileLocationX =  roomba.avenue();
+					pileLocationY = roomba.street();
+				}
 				}
 			
 			
@@ -60,43 +71,42 @@ public class Roomba implements Directions {
 
 			
 
-			if(roomba.facingEast()) {
-				roomba.turnLeft();
-				roomba.move();
-				roomba.turnLeft();
-			}
-			else {
-				roomba.turnLeft();
-				roomba.turnLeft();
-				roomba.turnLeft();
-				roomba.move();
-				roomba.turnLeft();
-				roomba.turnLeft();
-				roomba.turnLeft();
-			}
 			
-				
-			
-			while (!roomba.frontIsClear()) {
 				if (!roomba.frontIsClear()) {
 					if (roomba.facingEast()) {
 						roomba.turnLeft();
-						roomba.move();
+						if (roomba.frontIsClear())
+						{roomba.move();
+						totalSpaces++;
 						roomba.turnLeft();
+						}
+						else
+						{
+							moreToClean=false;
+						}
 					} else {
 						roomba.turnLeft();
 						roomba.turnLeft();
 						roomba.turnLeft();
+						if (roomba.frontIsClear())
+						{
 						roomba.move();
+						totalSpaces++;
 						roomba.turnLeft();
 						roomba.turnLeft();
 						roomba.turnLeft();
+						}
+						else
+						{
+							moreToClean=false;
+						}
 					}
 				}
-			}
 		}
 
 		System.out.println("Area is: "+ totalSpaces);
+		System.out.println("The largest pile is: "+ pileCount);
+		System.out.println("The location of the largest pile is: " + pileLocationX + "," + pileLocationY);
 
 		 // Need to move this somewhere else.
         // This method should return the total number of beepers cleaned up.
