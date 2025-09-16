@@ -7,10 +7,10 @@ public class Roomba implements Directions {
 	// Main method to make this self-contained
 	public static void main(String[] args) {
 		// LEAVE THIS ALONE!!!!!!
-		String worldName = "robot/finalTestWorld2024.wld";
+		String worldName = "robot/finalTestWorld2024.wld"; //which world the roomba is cleanin in
 
 		Roomba cleaner = new Roomba();
-		int totalBeepers = cleaner.cleanRoom(worldName, 26, 101);
+		int totalBeepers = cleaner.cleanRoom(worldName, 26, 101); //where the roomba starts
 		System.out.println("Roomba cleaned up a total of " + totalBeepers + " beepers.");
 		
 
@@ -29,12 +29,12 @@ public class Roomba implements Directions {
 
 		World.readWorld(worldName);
 		World.setVisible(true);
-		World.setDelay(0);
+		World.setDelay(0);  //the speed of the world
 
-		int totalBeepers =0;
-		int totalSpaces=1;
-		int largestPile=0;
-		int pileCount=0;
+		int totalBeepers = 0;  //List of variables used to find values 
+		int totalSpaces = 1;
+		int largestPile = 0;
+		int pileCount = 0;
 		int numOfPiles = 0;
 		int pileLocationX = 0;
 		int pileLocationY = 0;
@@ -57,48 +57,43 @@ public class Roomba implements Directions {
 					roomba.pickBeeper();
 					pileCount++;
 					totalBeepers++;
-					if (pileCount>largestPile) {
+					if (pileCount>largestPile) {  //looking to find the largest pile size
 						largestPile=pileCount;
-						pileLocationX =  roomba.street();
+						pileLocationX =  roomba.street();  //gets the location of the pile
 						pileLocationY = roomba.avenue();
 					}
+				}
+				if (pileCount > 0) { //this is to find the number of piles by counting any pile where there is more than 0 beepers
+					numOfPiles++;
 				}
 				roomba.move();
 				pileCount=0;
 				totalSpaces++;
-				
-
-			
-			
-			
 			}
-
-			
-
 			
 				if (!roomba.frontIsClear()) {
 					if (roomba.facingEast()) {
 						roomba.turnLeft();
 						while (roomba.nextToABeeper()) {
-					roomba.pickBeeper();
-					pileCount++;
-					totalBeepers++;
-					if (pileCount>largestPile) {
-						largestPile=pileCount;
-						pileLocationX =  roomba.street();
-						pileLocationY = roomba.avenue();
-					}
-				}
-						if (roomba.frontIsClear())
-						{roomba.move();
-						totalSpaces++;
-						roomba.turnLeft();
+							roomba.pickBeeper();
+							pileCount++;
+							totalBeepers++;
+							if (pileCount>largestPile) {  //Checks for largest pile again
+								largestPile=pileCount;
+								pileLocationX =  roomba.street();  //gets the location if the pile is bigger
+								pileLocationY = roomba.avenue();
+							}
 						}
-						else
-						{
+						if (roomba.frontIsClear()) {
+							roomba.move();
+							totalSpaces++;
+							roomba.turnLeft();
+						}
+						else {
 							moreToClean=false;
 						}
-					} else {
+					} 
+					else {
 						roomba.turnLeft();
 						roomba.turnLeft();
 						roomba.turnLeft();
@@ -106,39 +101,35 @@ public class Roomba implements Directions {
 							roomba.pickBeeper();
 							pileCount++;
 							totalBeepers++;
-					if (pileCount>largestPile) {
-						largestPile=pileCount;
-						pileLocationX =  roomba.street();
-						pileLocationY = roomba.avenue();
-					}
-				}
-						if (roomba.frontIsClear())
-						{
-						roomba.move();
-						totalSpaces++;
-						roomba.turnLeft();
-						roomba.turnLeft();
-						roomba.turnLeft();
+							if (pileCount>largestPile) { //This is to find the largest pile in the room 
+								largestPile=pileCount;
+								pileLocationX =  roomba.street(); //lines 106 and 107 locate where the largest pile is
+								pileLocationY = roomba.avenue();
+							}
 						}
-						else
-						{
+				
+				
+						if (roomba.frontIsClear()) {
+							roomba.move();
+							totalSpaces++;
+							roomba.turnLeft();
+							roomba.turnLeft();
+							roomba.turnLeft();
+						}
+						else {
 							moreToClean=false;
 						}
 						
 					}
 				}
-			if (pileCount > 0) {
-				numOfPiles++;
-			}
 		}
 
-		System.out.println("Area is: "+ totalSpaces);
-		System.out.println("The largest pile is: "+ pileCount);
-		System.out.println("The location of the largest pile is: " + pileLocationX + "," + pileLocationY);
-		System.out.println("The number of piles is: " + numOfPiles);
-
-		 // Need to move this somewhere else.
-        // This method should return the total number of beepers cleaned up.
-		return totalBeepers;
+		System.out.println("Area is: "+ totalSpaces); //prints Area
+		System.out.println("The number of piles is: " + numOfPiles); //Printing piles
+		System.out.println("The largest pile is: "+ largestPile); //prints largest
+		System.out.println("The location of the largest pile is: " + pileLocationX + "," + pileLocationY); //prints the location
+		System.out.println("The average pile size is: " + (totalBeepers / numOfPiles)); //prints avg pile
+		System.out.println("The percent dirty is: " + (((double)numOfPiles/totalSpaces) * 100) + "%"); //prints percent diryt
+		return totalBeepers; // This method should return the total number of beepers cleaned up.
 	}
 }
