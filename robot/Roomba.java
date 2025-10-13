@@ -35,7 +35,7 @@ public class Roomba implements Directions {
 		int totalSpaces = 1;
 		int largestPile = 0;
 		int pileCount = 0;
-		int numOfPiles = 0;
+		int numOfPiles = 1;
 		int pileLocationX = 0;
 		int pileLocationY = 0;
 
@@ -128,7 +128,7 @@ public class Roomba implements Directions {
 		System.out.println("The number of piles is: " + numOfPiles); //Printing piles
 		System.out.println("The largest pile is: "+ largestPile); //prints largest
 		System.out.println("The location of the largest pile is: " + pileLocationX + "," + pileLocationY); //prints the location
-		System.out.println("The average pile size is: " + (totalBeepers / numOfPiles)); //prints avg pile
+		System.out.println("The average pile size is: " + ((double)totalBeepers / numOfPiles)); //prints avg pile
 		System.out.println("The percent dirty is: " + (((double)numOfPiles/totalSpaces) * 100) + "%"); //prints percent diryt
 		return totalBeepers; // This method should return the total number of beepers cleaned up.
 	}
