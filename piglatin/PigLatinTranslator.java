@@ -13,7 +13,7 @@ public class PigLatinTranslator {
     }
 
     public static String translate(String input) {
-        System.out.println("  -> translate('" + input + "')");
+        System.out.println("  -> translate('" + input + "')"); 
 
         String result = "";
 
