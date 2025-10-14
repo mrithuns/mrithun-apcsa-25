@@ -33,8 +33,12 @@ public class PigLatinTranslator {
 
         // TODO: Replace this code to correctly translate a single word.
         // Start here first!
+        if (input.index(0) == "a" || input.index(0) == "e" || input.index(0) == "i" || input.index(0) == "o" || input.index(0) == "u") {
+            System.out.println("hi");
+        }
         // This is the first place to work.
         result = input; // delete this line
+
 
         return result;
     }
