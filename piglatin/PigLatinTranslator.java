@@ -33,14 +33,16 @@ public class PigLatinTranslator {
 
         // TODO: Replace this code to correctly translate a single word.
         // Start here first!
-        if (input.index(0) == "a" || input.index(0) == "e" || input.index(0) == "i" || input.index(0) == "o" || input.index(0) == "u") {
-            System.out.println("hi");
+        if (input.startsWith("a") || input.startsWith("e") || input.startsWith("i") || input.startsWith("o") || input.startsWith("u")) {
+            return input.substring(0);
+
         }
+        
         // This is the first place to work.
         result = input; // delete this line
 
 
-        return result;
+         //return result;
     }
 
     // Add additonal private methods here.
