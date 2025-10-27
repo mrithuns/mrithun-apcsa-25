@@ -9,21 +9,16 @@ public class PigLatinTranslator {
 
         // TODO: Add code here to populate translatedBook with a translation of the
         // input book.
-        // Curent do-nothing code will return an empty book.
+        // Current do-nothing code will return an empty book.
         // Your code will need to call translate(String input) many times.
 
         return translatedBook;
     }
 
     public static String translate(String input) {
-        System.out.println("  -> translate('" + input + "')"); 
+        System.out.println("  -> translate('" + input + "')");
 
         String result = "";
-
-        // TODO: translate a string input, store in result.
-        // The input to this function could be any English string.
-        // It may be made up of many words.
-        // This method must call translateWord once for each word in the string.
 
         // If input is only whitespace, grader expects empty string.
         if (input == null || input.trim().isEmpty()) {
@@ -51,69 +46,70 @@ public class PigLatinTranslator {
         result = sb.toString();
 
         return result;
-    } 
+    }
 
-    private static boolean isvow(char a)
-    {
+    private static boolean isvow(char a) {
         String vows = "aeiou";
-        if (vows.indexOf(Character.toLowerCase(a)) >= 0)
-        {
-            return true;
-        }
-        return false;
+        return vows.indexOf(Character.toLowerCase(a)) >= 0;
     }
 
     private static String translateWord(String input) {
-        System.out.println("  -> translateWord('" + input + "')");
+    System.out.println("  -> translateWord('" + input + "')");
 
-        String result = "";
-
-        // TODO: Replace this code to correctly translate a single word.
-        // Start here first!
-        // This is the first place to work.
-
-        // --- Pig Latin logic that preserves punctuation outside and casing inside the word ---
-        if (input == null || input.isEmpty()) {
-            return input;
-        }
-
-        // Find index of first vowel (with 'y' as vowel only when not at index 0)
-        int split = firstVowelIndexForPigLatin(input);
-
-        if (split == 0) {
-            // Starts with vowel: just append "ay" (grader expects "eat" -> "eatay")
-            result = input + "ay";
-        } else if (split > 0) {
-            // Move leading consonant cluster to end, then "ay".
-            // Use original casing by slicing original input directly.
-            result = input.substring(split) + input.substring(0, split) + "ay";
-        } else {
-            // No vowel found: just append "ay"
-            result = input + "ay";
-        }
-
-        return result;
+    if (input == null || input.isEmpty()) {
+        return input;
     }
 
-    // Add additonal private methods here.
-    // For example, I had one like this:
-    // private static String capitalizeFirstLetter(String input)
+    // Track which letters are uppercase
+    boolean[] upper = new boolean[input.length()];
+    for (int i = 0; i < input.length(); i++) {
+        upper[i] = Character.isUpperCase(input.charAt(i));
+    }
 
-    // Helper: first vowel index where 'y' counts as vowel only when not at position 0.
-    // We examine letters only; hyphens/apostrophes remain part of the token and naturally
-    // allow cluster moves across them (e.g., "clean-cut" -> split after 'cl' -> "ean-cutclay").
+    String lower = input.toLowerCase();
+    int split = firstVowelIndexForPigLatin(lower);
+
+    String base;
+    boolean[] newUpper;
+
+    if (split == 0) {
+        base = lower + "ay";
+        newUpper = upper; // no movement
+    } else if (split > 0) {
+        base = lower.substring(split) + lower.substring(0, split) + "ay";
+        // rotate uppercase map the same way letters move
+        newUpper = new boolean[upper.length];
+        for (int i = 0; i < upper.length; i++) {
+            int newPos = (i - split + upper.length) % upper.length;
+            newUpper[newPos] = upper[i];
+        }
+    } else {
+        base = lower + "ay";
+        newUpper = upper;
+    }
+
+    StringBuilder result = new StringBuilder(base);
+
+    // Apply uppercase pattern to first part only (ignore "ay")
+    for (int i = 0; i < input.length() && i < result.length(); i++) {
+        if (newUpper[i]) {
+            result.setCharAt(i, Character.toUpperCase(result.charAt(i)));
+        }
+    }
+
+    return result.toString();
+}
+
+
+    // Helper: find first vowel index, 'y' counts as vowel only if not at index 0
     private static int firstVowelIndexForPigLatin(String s) {
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
-
-            // letters only matter for vowel detection; any non-letter can't be a vowel
-            if (!Character.isLetter(c)) {
-                continue;
-            }
+            if (!Character.isLetter(c)) continue;
 
             char lc = Character.toLowerCase(c);
-            if (isvow(lc)) return i;              // a/e/i/o/u
-            if (lc == 'y' && i != 0) return i;    // 'y' as vowel when not leading
+            if (isvow(lc)) return i;
+            if (lc == 'y' && i != 0) return i;
         }
         return -1;
     }
