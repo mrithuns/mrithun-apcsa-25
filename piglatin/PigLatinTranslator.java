@@ -1,115 +1,107 @@
 package piglatin;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Scanner;
 
 public class PigLatinTranslator {
+
+    // Translate an entire Book object (each page line by line)
     public static Book translate(Book input) {
         Book translatedBook = new Book();
 
-        // TODO: Add code here to populate translatedBook with a translation of the
-        // input book.
-        // Current do-nothing code will return an empty book.
-        // Your code will need to call translate(String input) many times.
+        for (int i = 0; i < input.getNumPages(); i++) {
+            String pageText = input.getPage(i);
+            translatedBook.addPage(translate(pageText));
+        }
 
         return translatedBook;
     }
 
+    // Translate a line of text that might contain multiple words and punctuation
     public static String translate(String input) {
         System.out.println("  -> translate('" + input + "')");
 
-        String result = "";
-
-        // If input is only whitespace, grader expects empty string.
         if (input == null || input.trim().isEmpty()) {
             return "";
         }
 
-        // Treat hyphenated and apostrophe words as single tokens:
-        // e.g., "clean-cut" and "don't"
-        Pattern word = Pattern.compile("[A-Za-z]+(?:[-'][A-Za-z]+)*");
-        Matcher m = word.matcher(input);
-        StringBuilder sb = new StringBuilder();
+        Scanner scan = new Scanner(input);
+        String result = "";
+        int lastEnd = 0;
 
-        int last = 0;
-        while (m.find()) {
-            // Append any non-word chunk before the word
-            sb.append(input, last, m.start());
-            String w = m.group();
-            // Translate just the word token
-            sb.append(translateWord(w));
-            last = m.end();
+        // We’ll rebuild the string manually so spacing and punctuation stay intact
+        while (scan.hasNext()) {
+            String word = scan.next();
+            int index = input.indexOf(word, lastEnd);
+
+            // Copy everything between words exactly as it was
+            if (index > lastEnd) {
+                result += input.substring(lastEnd, index);
+            }
+
+            result += translateWord(word);
+            lastEnd = index + word.length();
         }
-        // Append any trailing non-word chunk
-        sb.append(input.substring(last));
 
-        result = sb.toString();
+        // Add any leftover spaces or punctuation after last word
+        if (lastEnd < input.length()) {
+            result += input.substring(lastEnd);
+        }
 
+        scan.close();
         return result;
     }
 
-    private static boolean isvow(char a) {
-        String vows = "aeiou";
-        return vows.indexOf(Character.toLowerCase(a)) >= 0;
-    }
+    // Translate one word of English into Pig Latin
+    private static String translateWord(String word) {
+        System.out.println("  -> translateWord('" + word + "')");
 
-    private static String translateWord(String input) {
-    System.out.println("  -> translateWord('" + input + "')");
-
-    if (input == null || input.isEmpty()) {
-        return input;
-    }
-
-    // Track which letters are uppercase
-    boolean[] upper = new boolean[input.length()];
-    for (int i = 0; i < input.length(); i++) {
-        upper[i] = Character.isUpperCase(input.charAt(i));
-    }
-
-    String lower = input.toLowerCase();
-    int split = firstVowelIndexForPigLatin(lower);
-
-    String base;
-    boolean[] newUpper;
-
-    if (split == 0) {
-        base = lower + "ay";
-        newUpper = upper; // no movement
-    } else if (split > 0) {
-        base = lower.substring(split) + lower.substring(0, split) + "ay";
-        // rotate uppercase map the same way letters move
-        newUpper = new boolean[upper.length];
-        for (int i = 0; i < upper.length; i++) {
-            int newPos = (i - split + upper.length) % upper.length;
-            newUpper[newPos] = upper[i];
+        if (word == null || word.length() == 0) {
+            return word;
         }
-    } else {
-        base = lower + "ay";
-        newUpper = upper;
-    }
 
-    StringBuilder result = new StringBuilder(base);
-
-    // Apply uppercase pattern to first part only (ignore "ay")
-    for (int i = 0; i < input.length() && i < result.length(); i++) {
-        if (newUpper[i]) {
-            result.setCharAt(i, Character.toUpperCase(result.charAt(i)));
+        // Keep punctuation at the end (like "Trash!")
+        String punctuation = "";
+        char last = word.charAt(word.length() - 1);
+        if (!Character.isLetter(last)) {
+            punctuation = "" + last;
+            word = word.substring(0, word.length() - 1);
         }
+
+        // Remember if the first letter was uppercase
+        boolean startsUpper = Character.isUpperCase(word.charAt(0));
+
+        // Make everything lowercase for easier work
+        String lower = word.toLowerCase();
+
+        int split = firstVowelIndex(lower);
+        String result;
+
+        if (split == 0) {
+            result = lower + "ay";                 // starts with vowel
+        } else if (split > 0) {
+            result = lower.substring(split) + lower.substring(0, split) + "ay"; // consonant start
+        } else {
+            result = lower + "ay";                 // no vowels
+        }
+
+        // Fix capitalization: first letter uppercase if original started uppercase
+        if (startsUpper) {
+            result = Character.toUpperCase(result.charAt(0)) + result.substring(1);
+        }
+
+        return result + punctuation;
     }
 
-    return result.toString();
-}
-
-
-    // Helper: find first vowel index, 'y' counts as vowel only if not at index 0
-    private static int firstVowelIndexForPigLatin(String s) {
+    // Find index of first vowel ('y' counts as vowel if not at start)
+    private static int firstVowelIndex(String s) {
         for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (!Character.isLetter(c)) continue;
-
-            char lc = Character.toLowerCase(c);
-            if (isvow(lc)) return i;
-            if (lc == 'y' && i != 0) return i;
+            char c = Character.toLowerCase(s.charAt(i));
+            if ("aeiou".indexOf(c) >= 0) {
+                return i;
+            }
+            if (c == 'y' && i != 0) {
+                return i;
+            }
         }
         return -1;
     }
