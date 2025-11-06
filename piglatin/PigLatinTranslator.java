@@ -5,20 +5,30 @@ import java.util.Scanner;
 public class PigLatinTranslator {
 
     // Translate an entire Book object (each page line by line)
-    public static Book translate(Book input) {
-        Book translatedBook = new Book();
+   public static Book translate(Book input) {
+    Book translatedBook = new Book();
+    translatedBook.setTitle(input.getTitle());
 
-        for (int i = 0; i < input.getNumPages(); i++) {
-            String pageText = input.getPage(i);
-            translatedBook.addPage(translate(pageText));
+    for (int i = 0; i < input.getLineCount(); i++) {
+        String lineText = input.getLine(i);
+        if (lineText == null || lineText.trim().isEmpty()) {
+            translatedBook.appendLine("");  // keep blank lines
+            continue;
         }
 
-        return translatedBook;
+        String translatedLine = translate(lineText);
+        translatedBook.appendLine(translatedLine);
     }
+
+    return translatedBook;
+}
+
+
+
 
     // Translate a line of text that might contain multiple words and punctuation
     public static String translate(String input) {
-        System.out.println("  -> translate('" + input + "')");
+        //System.out.println("  -> translate('" + input + "')"); used for tenting
 
         if (input == null || input.trim().isEmpty()) {
             return "";
@@ -53,7 +63,7 @@ public class PigLatinTranslator {
 
     // Translate one word of English into Pig Latin
     private static String translateWord(String word) {
-        System.out.println("  -> translateWord('" + word + "')");
+       // System.out.println("  -> translateWord('" + word + "')");   used for testig
 
         if (word == null || word.length() == 0) {
             return word;
