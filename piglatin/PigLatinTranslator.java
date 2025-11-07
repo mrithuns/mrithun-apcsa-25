@@ -68,7 +68,6 @@ public class PigLatinTranslator {
         if (word == null || word.length() == 0) {
             return word;
         }
-
         // Keep punctuation at the end (like "Trash!")
         String punctuation = "";
         char last = word.charAt(word.length() - 1);
@@ -76,8 +75,19 @@ public class PigLatinTranslator {
             punctuation = "" + last;
             word = word.substring(0, word.length() - 1);
         }
-
-        // Remember if the first letter was uppercase
+        boolean full_punch=true;
+        for (char a:word.toCharArray())
+        {
+            if (Character.isLetter(a))
+            {
+                full_punch=false;
+                break;
+            }
+        }
+        if (full_punch)return word;
+        System.err.println(word);
+        
+            // Remember if the first letter was uppercase
         boolean startsUpper = Character.isUpperCase(word.charAt(0));
 
         // Make everything lowercase for easier work
