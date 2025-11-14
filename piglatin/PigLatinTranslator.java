@@ -25,7 +25,6 @@ public class PigLatinTranslator {
 
 
 
-
     // Translate a line of text that might contain multiple words and punctuation
     public static String translate(String input) {
         //System.out.println("  -> translate('" + input + "')"); used for tenting
