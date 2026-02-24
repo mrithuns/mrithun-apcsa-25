@@ -30,8 +30,15 @@ public class IrregularPolygon {
 
     public double area() {
         // TODO: Calculate the area.
-        Double area = 0.0;
-        return area;
+        double area = 0.0;
+        int n = myPolygon.size();
+        for (int i = 0; i < n; i++) {
+            Point2D.Double currentPoint = myPolygon.get(i);
+            Point2D.Double nextPoint = myPolygon.get((i + 1) % n);
+            area += currentPoint.x * nextPoint.y;
+            area -= nextPoint.x * currentPoint.y;
+        }
+        return Math.abs(area / 2.0);
     }
 
     public void draw()
