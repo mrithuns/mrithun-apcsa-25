@@ -24,6 +24,7 @@ public class TowerModel {
      Example of a game of height three in the starting position.
 
     */
+
     public TowerModel(int height)
     {
         towerHeight = height;
@@ -50,6 +51,8 @@ public class TowerModel {
     {
         System.out.println("Move #" + ++moveCounter + " from " + source + " to " + destination);
         // TODO!!
+        towers[destination].push(towers[source].pop());
+        
     }
 
     // Helper method to nicely print the current model state.
