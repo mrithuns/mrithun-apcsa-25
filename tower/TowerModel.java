@@ -50,9 +50,14 @@ public class TowerModel {
     public void move(int source, int destination)
     {
         System.out.println("Move #" + ++moveCounter + " from " + source + " to " + destination);
-        // TODO!!
-        towers[destination].push(towers[source].pop());
-        
+        // Check if the move is valid
+        int disk = towers[source].peek();
+        int destTop = towers[destination].peek();
+        if (disk != 0 && (destTop == 0 || disk < destTop)) {
+            towers[destination].push(towers[source].pop());
+        } else {
+            System.out.println("Invalid move: cannot place disk " + disk + " on disk " + destTop);
+        }
     }
 
     // Helper method to nicely print the current model state.

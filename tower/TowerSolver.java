@@ -18,7 +18,18 @@ public class TowerSolver {
     // Create an overloaded solve(...) method
     // This new method will be recursive (call itself)
     //
-    // [ solve method here]
-    //
+    // Recursive method to solve Tower of Hanoi
+    private void solve(int height, int source, int destination, int auxiliary)
+    {
+        // Base case
+        if (height == 1)
+        {
+            model.move(source, destination);
+            return;
+        }
+        solve(height - 1, source, auxiliary, destination);
+        model.move(source, destination);
+        solve(height - 1, auxiliary, destination, source);
+    }
 
 }
